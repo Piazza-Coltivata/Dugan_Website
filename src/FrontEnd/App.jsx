@@ -580,7 +580,7 @@ function ServicesPage() {
           right: 0,
           bottom: 0,
           backgroundImage: `url('/newport-oregon-map.png')`,
-          backgroundSize: "95%",
+          backgroundSize: isMobile ? "cover" : "95%",
           backgroundAttachment: isMobile ? "scroll" : "fixed",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -588,7 +588,8 @@ function ServicesPage() {
           zIndex: -1,
         }}
       />
-      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "3rem 1.5rem", position: "relative" }}>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "3rem 1.5rem", position: "relative" }}
+>
       <h1 style={{ fontSize: "clamp(1.75rem, 5vw, 2.5rem)", fontWeight: "bold", marginBottom: "0.5rem", color: "black" }}>Services</h1>
       <p style={{ marginTop: "0.5rem", color: "black", fontSize: "clamp(1rem, 2.5vw, 1.125rem)" }}>We offer a wide range of moving and related services. Below are the details.</p>
 
@@ -733,7 +734,7 @@ function ContactPage() {
           right: 0,
           bottom: 0,
           backgroundImage: `url('/newport-oregon-map.png')`,
-          backgroundSize: "95%",
+          backgroundSize: isMobile ? "cover" : "95%",
           backgroundAttachment: isMobile ? "scroll" : "fixed",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
