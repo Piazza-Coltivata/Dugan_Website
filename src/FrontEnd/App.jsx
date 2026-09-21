@@ -95,6 +95,7 @@ function Header() {
           <div>
             <div style={{ fontWeight: "bold", fontSize: "1.125rem" }}>Strong Guys's LLC</div>
             <div style={{ fontSize: "0.75rem", color: "#d1d5db" }}>MOVING SUCKS! — We make it easier.</div>
+            <div style={{ fontSize: "0.75rem", color: "#f51616" }}>ODOT HHG Certificate No. 016957</div>
           </div>
         </Link>
 
