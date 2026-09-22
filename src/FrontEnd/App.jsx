@@ -711,13 +711,31 @@ function ContactPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [botField, setBotField] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
 
-  function handleSubmit(e) {
+  function encodeFormData(data) {
+    return Object.keys(data)
+      .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+      .join("&");
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    const subject = encodeURIComponent("Website Quote Request - Strong Guys's LLC");
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\n${message}`);
-    window.location.href = `mailto:strongguysmoversschedule@gmail.com?subject=${subject}&body=${body}`;
-    navigate("/");
+    if (botField) return; // honeypot triggered — silently drop
+    setStatus("sending");
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encodeFormData({ "form-name": "contact", name, email, phone, message }),
+      });
+      if (!res.ok) throw new Error("Submission failed");
+      setStatus("success");
+      setTimeout(() => navigate("/"), 1800);
+    } catch (err) {
+      setStatus("error");
+    }
   }
 
   return (
@@ -768,7 +786,17 @@ function ContactPage() {
           gap: "1.5rem",
         }}
       >
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <form name="contact" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <input
+            type="text"
+            name="bot-field"
+            value={botField}
+            onChange={(e) => setBotField(e.target.value)}
+            style={{ position: "absolute", left: "-9999px" }}
+            tabIndex="-1"
+            autoComplete="off"
+            aria-hidden="true"
+          />
           <input
             required
             value={name}
@@ -838,20 +866,22 @@ function ContactPage() {
               color: inputText,
             }}
           />
-          <div style={{ display: "flex", gap: "0.5rem" }}>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
             <button
               type="submit"
+              disabled={status === "sending"}
               style={{
                 backgroundColor: "#dc2626",
                 color: "white",
                 padding: "0.5rem 1rem",
                 borderRadius: "0.25rem",
                 border: "none",
-                cursor: "pointer",
+                cursor: status === "sending" ? "not-allowed" : "pointer",
                 fontWeight: "600",
+                opacity: status === "sending" ? 0.7 : 1,
               }}
             >
-              Send Message
+              {status === "sending" ? "Sending…" : "Send Message"}
             </button>
             <a
               href="tel:5412648502"
@@ -866,6 +896,14 @@ function ContactPage() {
             >
               Call Now
             </a>
+            {status === "success" && (
+              <span style={{ color: "#16a34a", fontWeight: "600" }}>Message sent! We'll be in touch soon.</span>
+            )}
+            {status === "error" && (
+              <span style={{ color: "#dc2626", fontWeight: "600" }}>
+                Something went wrong. Please call us instead.
+              </span>
+            )}
           </div>
         </form>
 
